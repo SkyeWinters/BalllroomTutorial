@@ -4,29 +4,33 @@ using UnityEngine;
 
 public class ResetOnEnd : MonoBehaviour
 {
-    private Animator animator;
-    private Vector3 initialPosition;
-    private Quaternion startingRotation;
+    private Animator _animator;
+    private Vector3 _initialPosition;
+    private Quaternion _startingRotation;
 
-    void Start()
+    private void Start()
     {
-        // Get the Animator component
-        animator = GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
 
-        // Save the initial position
-        initialPosition = transform.localPosition;
-        startingRotation = transform.localRotation;
+        _initialPosition = transform.localPosition;
+        _startingRotation = transform.localRotation;
     }
 
-    void Update()
+    private void Update()
     {
-        // Check if the animation has finishe
-        if (animator.GetCurrentAnimatorStateInfo(0).normalizedTime - Mathf.Floor(animator.GetCurrentAnimatorStateInfo(0).normalizedTime) < 0.01 && !animator.IsInTransition(0))
-        {
-            // Reset position to the initial position
-            transform.localPosition = initialPosition;
-            transform.localRotation = startingRotation;
-        }
+        var currentPlaybackTime = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        if (!(currentPlaybackTime - Mathf.Floor(currentPlaybackTime) < 0.01) || _animator.IsInTransition(0)) return;
+        
+        transform.localPosition = _initialPosition;
+        transform.localRotation = _startingRotation;
     }
     
+    public void ResetTo(Vector3 position, Vector3 rotation)
+    {
+        _initialPosition = position;
+        _startingRotation = Quaternion.Euler(rotation);
+        
+        transform.localPosition = position;
+        transform.localEulerAngles = rotation;
+    }
 }

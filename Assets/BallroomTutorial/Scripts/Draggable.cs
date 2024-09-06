@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,18 +10,20 @@ namespace BallroomTutorial.Scripts
         [SerializeField] private float _pressDuration = 0.5f;
         [SerializeField] private float _stretchAmount = 10f;
         [SerializeField] private float _stretchDuration = 0.5f;
-    
+
         private RectTransform _rectTransform;
         private float _startTime;
         private bool _isPressing;
 
-        private float Top { get; set; }
-        private static float Bottom => 0;
+        protected float Top { get; set; }
+        protected float Bottom { get; set; }
+        protected bool CanMove { get; set; } = true;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
             Top = _rectTransform.position.y;
+            Bottom = _rectTransform.position.y;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -32,7 +35,7 @@ namespace BallroomTutorial.Scripts
 
         public void OnPointerMove(PointerEventData eventData)
         {
-            if (!_isPressing || Time.time - _startTime < _pressDuration) return;
+            if (!CanMove || !_isPressing || Time.time - _startTime < _pressDuration) return;
         
             var delta = eventData.delta;
             var newYPos = _rectTransform.position.y + delta.y;
@@ -42,7 +45,7 @@ namespace BallroomTutorial.Scripts
 
         public void Update()
         {
-            if (_isPressing) return;
+            if (_isPressing || !CanMove) return;
             HandleDrift();
         }
 
