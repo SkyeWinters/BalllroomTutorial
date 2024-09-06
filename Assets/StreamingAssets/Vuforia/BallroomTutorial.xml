@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QCARConfig>
+  <Tracking>
+    <ImageTarget name="Follow_Natural_Turn_New" size="1.000000 0.750000" />
+    <ImageTarget name="Lead_Natural_Turn_New" size="1.000000 0.750000" />
+    <ImageTarget name="Lead_Reverse_Turn_New" size="1.000000 0.750000" />
+    <ImageTarget name="Natural_Spin_Turn_Lead_New" size="1.000000 0.750000" />
+    <ImageTarget name="Cover_Page" size="1.000000 0.797297" />
+  </Tracking>
+</QCARConfig>
