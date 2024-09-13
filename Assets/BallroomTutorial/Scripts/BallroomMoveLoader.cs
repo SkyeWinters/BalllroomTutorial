@@ -7,17 +7,20 @@ namespace BallroomTutorial.Scripts
     public class BallroomMoveLoader : MonoBehaviour
     {
         [SerializeField] private BallroomMoveHandler _leadMoveHandler;
-        [SerializeField] private ResetOnEnd _leadReset;
-        
         [SerializeField] private BallroomMoveHandler _followMoveHandler;
-        [SerializeField] private ResetOnEnd _followReset;
-        
+
+        [SerializeField] private BallroomMove _defaultMove;
         [SerializeField] private SharedMoveLoader _moveLoader;
         [SerializeField] private SharedTime _playbackSpeed;
 
         private void OnEnable()
         {
             _playbackSpeed.OnValueChanged += SetPlaybackSpeed;
+            if (_defaultMove != null)
+            {
+                _leadMoveHandler.LoadMove(_defaultMove);
+                _followMoveHandler.LoadMove(_defaultMove);
+            }
         }
         
         private void OnDisable()
@@ -64,11 +67,13 @@ namespace BallroomTutorial.Scripts
         public void LoadMove(BallroomMove move)
         {
             _leadMoveHandler.LoadMove(move);
-            _leadReset.ResetTo(move.LeadPosition, move.LeadRotation);
-            
             _followMoveHandler.LoadMove(move);
-            _followReset.ResetTo(move.FollowPosition, move.FollowRotation);
             
+            _moveLoader.SetValue(this);
+        }
+
+        public void SetMoveLoader()
+        {
             _moveLoader.SetValue(this);
         }
         
