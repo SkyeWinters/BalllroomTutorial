@@ -6,8 +6,6 @@ namespace BallroomTutorial.Scripts
 {
     public class BallroomMoveHandler : MonoBehaviour
     {
-        private readonly float[] SPEEDS = new[] { 1f, 1.5f, 2f, 0.25f, 0.5f, 0.75f };
-        
         [SerializeField] private Animator _animator;
         [SerializeField] private bool _isLead;
         
@@ -16,15 +14,14 @@ namespace BallroomTutorial.Scripts
         private List<BallroomStep> Steps => _isLead ? _currentMove.LeadSteps : _currentMove.FollowSteps;
        
         private float _time;
-        private int _playbackSpeedIndex;
-        private float PlaybackSpeed => SPEEDS[_playbackSpeedIndex];
+        private float _playbackSpeed;
         
         public void LoadMove(BallroomMove move)
         {
             _currentMove = move;
             _animator.runtimeAnimatorController = Movements;
             _animator.gameObject.SetActive(Movements != null);
-            _playbackSpeedIndex = 0;
+            _playbackSpeed = 1;
             PlayMovement();
         }
 
@@ -44,13 +41,14 @@ namespace BallroomTutorial.Scripts
         [Button("Play")]
         public void PlayMovement()
         {
-            _animator.speed = PlaybackSpeed;
+            _animator.speed = _playbackSpeed;
         }
         
         [Button("Toggle Speed")]
-        public void ToggleSpeed()
+        public void SetSpeed(float speed)
         {
-            _playbackSpeedIndex = (_playbackSpeedIndex + 1) % SPEEDS.Length;
+            _playbackSpeed = speed;
+            _animator.speed = _animator.speed == 0 ? 0 : _playbackSpeed;
         }
         
         [Button("Jump To")]
@@ -65,6 +63,41 @@ namespace BallroomTutorial.Scripts
             _animator.transform.localRotation = Steps[stepIndex].Rotation;
             
             Debug.Log("Jumped to step " + stepIndex);
+        }
+
+        public void AdvanceToNextTime()
+        {
+            var currentTime = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            currentTime -= Mathf.Floor(currentTime);
+            var nextIndex = 0;
+            
+            for (var i = 0; i < Steps.Count; i++)
+            {
+                if (currentTime < (Steps[i].Time - Mathf.Floor(Steps[i].Time)))
+                {
+                    nextIndex = i;
+                    break;
+                }
+            }
+            
+            AdvanceTime(nextIndex);
+        }
+        
+        public void RetreatToPreviousTime()
+        {
+            var currentTime = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            currentTime -= Mathf.Floor(currentTime);
+            var previousIndex = 0;
+            
+            for (var i = 0; i < Steps.Count; i++)
+            {
+                if (currentTime > (Steps[i].Time - Mathf.Floor(Steps[i].Time)))
+                {
+                    previousIndex = i;
+                }
+            }
+            
+            AdvanceTime(previousIndex);
         }
     }
 }

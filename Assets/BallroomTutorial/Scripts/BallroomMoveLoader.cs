@@ -1,4 +1,5 @@
-﻿using Sirenix.OdinInspector;
+﻿using System;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace BallroomTutorial.Scripts
@@ -10,6 +11,19 @@ namespace BallroomTutorial.Scripts
         
         [SerializeField] private BallroomMoveHandler _followMoveHandler;
         [SerializeField] private ResetOnEnd _followReset;
+        
+        [SerializeField] private SharedMoveLoader _moveLoader;
+        [SerializeField] private SharedTime _playbackSpeed;
+
+        private void OnEnable()
+        {
+            _playbackSpeed.OnValueChanged += SetPlaybackSpeed;
+        }
+        
+        private void OnDisable()
+        {
+            _playbackSpeed.OnValueChanged -= SetPlaybackSpeed;
+        }
 
         [Button("Stop")]
         public void StopMovement()
@@ -32,6 +46,20 @@ namespace BallroomTutorial.Scripts
             _followMoveHandler.AdvanceTime(stepIndex);
         }
         
+        [Button("Next Step")]
+        public void JumpToNextStep()
+        {
+            _leadMoveHandler.AdvanceToNextTime();
+            _followMoveHandler.AdvanceToNextTime();
+        }
+        
+        [Button("Previous Step")]
+        public void RetreatToPreviousStep()
+        {
+            _leadMoveHandler.RetreatToPreviousTime();
+            _followMoveHandler.RetreatToPreviousTime();
+        }
+        
         [Button("Load Move")]
         public void LoadMove(BallroomMove move)
         {
@@ -40,24 +68,8 @@ namespace BallroomTutorial.Scripts
             
             _followMoveHandler.LoadMove(move);
             _followReset.ResetTo(move.FollowPosition, move.FollowRotation);
-        }
-        
-        [Button("Load Lead Move")]
-        public void LoadLeadMove(BallroomMove move)
-        {
-            _leadMoveHandler.LoadMove(move);
-            _leadReset.ResetTo(move.LeadPosition, move.LeadRotation);
             
-            _followMoveHandler.gameObject.SetActive(false);
-        }
-        
-        [Button("Load Follow Move")]
-        public void LoadFollowMove(BallroomMove move)
-        {
-            _leadMoveHandler.gameObject.SetActive(false);
-            
-            _followMoveHandler.LoadMove(move);
-            _followReset.ResetTo(move.FollowPosition, move.FollowRotation);
+            _moveLoader.SetValue(this);
         }
         
         [Button("Unload Move")]
@@ -65,6 +77,12 @@ namespace BallroomTutorial.Scripts
         {
             _leadMoveHandler.UnloadMove();
             _followMoveHandler.UnloadMove();
+        }
+
+        private void SetPlaybackSpeed()
+        {
+            _leadMoveHandler.SetSpeed(_playbackSpeed.Value);
+            _followMoveHandler.SetSpeed(_playbackSpeed.Value);
         }
     }
 }

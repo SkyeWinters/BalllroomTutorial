@@ -47,6 +47,16 @@ namespace BallroomTutorial.Scripts
                 moveButton.SetMove(OnMoveSelected, move);
             }
         }
+
+        public void PauseMove()
+        {
+            _moveLoader.StopMovement();
+        }
+
+        public void PlayMove()
+        {
+            _moveLoader.PlayMovement();
+        }
         
         private void OnMoveSelected(BallroomMove move)
         {
