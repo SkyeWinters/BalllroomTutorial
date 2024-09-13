@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace BallroomTutorial.Scripts
@@ -18,6 +20,8 @@ namespace BallroomTutorial.Scripts
         [SerializeField] private Vector3 _leadPosition;
         [Tooltip("The starting local rotation of the Lead.")]
         [SerializeField] private Vector3 _leadRotation;
+        [Tooltip("The steps of the move for the Lead")]
+        [SerializeField] private List<BallroomStep> _leadSteps;
         
         [Header("Follow Properties")]
         [Tooltip("The motion capture recording of the Follow's movements.")]
@@ -26,6 +30,32 @@ namespace BallroomTutorial.Scripts
         [SerializeField] private Vector3 _followPosition;
         [Tooltip("The starting local rotation of the Follow.")]
         [SerializeField] private Vector3 _followRotation;
+        [Tooltip("The steps of the move for the Follow")]
+        [SerializeField] private List<BallroomStep> _followSteps;
+        
+        [Button("Add Lead Step")]
+        public void AddLeadStep(Animator leadAnimator)
+        {
+            var step = new BallroomStep
+            {
+                Time = leadAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime,
+                Position = leadAnimator.transform.localPosition,
+                Rotation = leadAnimator.transform.localRotation
+            };
+            _leadSteps.Add(step);
+        }
+        
+        [Button("Add Follow Step")]
+        public void AddFollowStep(Animator followAnimator)
+        {
+            var step = new BallroomStep
+            {
+                Time = followAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime,
+                Position = followAnimator.transform.localPosition,
+                Rotation = followAnimator.transform.localRotation
+            };
+            _followSteps.Add(step);
+        }
         
         /// <summary>
         /// The name of the move.
@@ -48,6 +78,11 @@ namespace BallroomTutorial.Scripts
         public Vector3 LeadRotation => _leadRotation;
         
         /// <summary>
+        /// The steps of the move for the Lead.
+        /// </summary>
+        public List<BallroomStep> LeadSteps => _leadSteps;
+        
+        /// <summary>
         /// The motion capture recording of the Follow's movements.
         /// </summary>
         public RuntimeAnimatorController FollowAnimation => _followAnimation;
@@ -61,5 +96,10 @@ namespace BallroomTutorial.Scripts
         /// The starting local rotation of the Follow.
         /// </summary>
         public Vector3 FollowRotation => _followRotation;
+        
+        /// <summary>
+        /// The steps of the move for the Follow.
+        /// </summary>
+        public List<BallroomStep> FollowSteps => _followSteps;
     }
 }

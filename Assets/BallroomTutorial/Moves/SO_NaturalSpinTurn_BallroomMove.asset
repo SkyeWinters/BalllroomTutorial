@@ -12,10 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a865616bafef49669a529690bc5ae9cd, type: 3}
   m_Name: SO_NaturalSpinTurn_BallroomMove
   m_EditorClassIdentifier: 
-  _moveName: Natural Spin Turn
+  _name: Natural Spin Turn
   _leadAnimation: {fileID: 9100000, guid: 31b324832b831c048977e6c5bd7499c8, type: 2}
   _leadPosition: {x: -0.333, y: 0.0173, z: 0.23}
   _leadRotation: {x: 0, y: 135.313, z: 0}
+  _leadSteps:
+  - Time: 3.0321434
+    Position: {x: -0.33214375, y: 0.017300019, z: 0.22995265}
+    Rotation: {x: -0.00000002235174, y: 0.9237822, z: 0.00000003445893, w: 0.38291824}
+  - Time: 3.5012236
+    Position: {x: -0.14093886, y: 0.0189557, z: -0.08603408}
+    Rotation: {x: -0.000000034255205, y: 0.80983156, z: -0.000000055879347, w: -0.58666253}
+  - Time: 3.8232052
+    Position: {x: 0.094314836, y: 0.024977626, z: -0.2539571}
+    Rotation: {x: -0.00000005110632, y: 0.8374539, z: -0.00000008195638, w: -0.54650795}
   _followAnimation: {fileID: 0}
   _followPosition: {x: 0, y: 0, z: 0}
   _followRotation: {x: 0, y: 0, z: 0}
+  _followSteps: []
