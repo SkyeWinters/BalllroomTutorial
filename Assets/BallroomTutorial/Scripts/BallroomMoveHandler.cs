@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -16,12 +18,20 @@ namespace BallroomTutorial.Scripts
         private ResetOnEnd _resetOnEnd;
         private float _time;
         private float _playbackSpeed;
-        
+        private AudioSource _audioSource;
+        private int _lastTime;
+
+        private void Awake()
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
+
         public void LoadMove(BallroomMove move)
         {
             _currentMove = move;
             _animator.runtimeAnimatorController = Movements;
             _animator.gameObject.SetActive(Movements != null);
+            _lastTime = 0;
             _playbackSpeed = 1;
             _resetOnEnd = GetComponentInChildren<ResetOnEnd>(true);
             if (_isLead) _resetOnEnd.ResetTo(move.LeadPosition, move.LeadRotation);
@@ -29,8 +39,27 @@ namespace BallroomTutorial.Scripts
             PlayMovement();
         }
 
+        private const int BeatsPerMeasure = 3;
+        private const float BeatsPerPhrase = 12f;
+        
+        public void Update()
+        {
+            if (_animator.speed > 0 && _audioSource != null && _currentMove != null)
+            {
+                var time = _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+
+                if (time - _lastTime / BeatsPerPhrase > 0)
+                {
+                    _audioSource.pitch = _lastTime % BeatsPerMeasure == 1 ? 0.9f : 1;
+                    if (_lastTime % BeatsPerPhrase != 0) _audioSource.Play();
+                    _lastTime += 1;
+                }
+            }
+        }
+
         public void UnloadMove()
         {
+            StopMovement();
             _currentMove = null;
             _animator.runtimeAnimatorController = null;
             _animator.gameObject.SetActive(false);
