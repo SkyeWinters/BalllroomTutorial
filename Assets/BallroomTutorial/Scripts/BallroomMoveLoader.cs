@@ -1,5 +1,6 @@
 ﻿using System;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace BallroomTutorial.Scripts
@@ -66,6 +67,7 @@ namespace BallroomTutorial.Scripts
         [Button("Load Move")]
         public void LoadMove(BallroomMove move)
         {
+            GetComponentsInChildren<BoolVisibilityHandler>().ForEach(x => x.enabled = true);
             _leadMoveHandler.LoadMove(move);
             _followMoveHandler.LoadMove(move);
             
@@ -80,6 +82,7 @@ namespace BallroomTutorial.Scripts
         [Button("Unload Move")]
         public void UnloadMove()
         {
+            GetComponentsInChildren<BoolVisibilityHandler>().ForEach(x => x.enabled = false);
             _leadMoveHandler.UnloadMove();
             _followMoveHandler.UnloadMove();
         }

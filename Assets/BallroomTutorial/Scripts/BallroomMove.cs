@@ -56,7 +56,22 @@ namespace BallroomTutorial.Scripts
             };
             _followSteps.Add(step);
         }
-        
+
+
+        [Button("Add Lead Start")]
+        public void AddLeadStart(Animator leadAnimator)
+        {
+            _leadPosition = leadAnimator.transform.localPosition;
+            _leadRotation = leadAnimator.transform.localEulerAngles;
+        }
+
+        [Button("Add Follow Start")]
+        public void AddFollowStart(Animator followAnimator)
+        {
+            _followPosition = followAnimator.transform.localPosition;
+            _followRotation = followAnimator.transform.localEulerAngles;
+        }
+
         /// <summary>
         /// The name of the move.
         /// </summary>
